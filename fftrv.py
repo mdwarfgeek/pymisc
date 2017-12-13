@@ -1,5 +1,6 @@
 import math
 import numpy
+import sys
 
 from scipy.interpolate import InterpolatedUnivariateSpline
 
@@ -37,9 +38,26 @@ def fitpeak(x, y, pkfrac):
   ypar = y[ia+1:ib] - ymax
   
   coef = numpy.polynomial.polynomial.polyfit(xpar, ypar, 2, full=False)
-  
-  xbest = xmax - 0.5*coef[1]/coef[2]
-  ybest = ymax + coef[0] - 0.25*coef[1]*coef[1]/coef[2]
+
+  # Make sure it's a maximum.
+  if coef[2] < 0:
+    # Also check maximum is in range.
+    dx = 0.5*coef[1]/coef[2]
+
+    if dx >= numpy.min(xpar) and dx <= numpy.max(xpar):
+      xbest = xmax - dx
+      ybest = ymax + coef[0] - 0.5*coef[1]*dx
+    else:
+      xbest = None
+      ybest = None
+  else:
+    xbest = None
+    ybest = None
+
+  if xbest is None:
+    # Fall back to something simpler.
+    print >>sys.stderr, "fitpeak: failed to find maximum in range"
+    xbest, ybest = parint(x, y, imax)
 
   return xbest, ybest
 
@@ -52,16 +70,22 @@ def parint(x, y, ipk):
   dya = y[ipk-1] - ypk
   dyb = y[ipk+1] - ypk
 
-  dxasq = dxa*dxa
-  dxbsq = dxb*dxb
+  # Check there's a maximum.
+  if dya < 0 and dyb < 0:
+    dxasq = dxa*dxa
+    dxbsq = dxb*dxb
 
-  denom = dxb * dxasq - dxa * dxbsq
+    denom = dxb * dxasq - dxa * dxbsq
 
-  b = (dyb * dxasq - dya * dxbsq) / denom
-  c = (dya * dxb - dyb * dxa) / denom
+    b = (dyb * dxasq - dya * dxbsq) / denom
+    c = (dya * dxb - dyb * dxa) / denom
 
-  xbest = xpk - 0.5*b/c
-  ybest = ypk - 0.25*b*b/c
+    xbest = xpk - 0.5*b/c
+    ybest = ypk - 0.25*b*b/c
+  else:
+    print >>sys.stderr, "parint: failed"
+    xbest = xpk
+    ybest = ypk
 
   return xbest, ybest
 
