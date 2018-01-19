@@ -18,3 +18,10 @@ fftrv.py
 
 FFT-based cross-correlation for radial velocities.
 
+mk2mass.py
+----------
+
+Functions for estimating M-dwarf masses from absolute K magnitude and
+vice versa.  Includes versions of all the functions used in the MEarth
+databases and publications.
+
