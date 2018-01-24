@@ -301,12 +301,14 @@ Nidever et al. 2002 for a set of suitable M-dwarf velocity standards).
                 zbroad=0, u1=0, u2=0, zbroadt=0, # rotation
                 lwmin=None, lwmax=None):  # user specified sampling
 
-    # Decide wavelength sampling.
-    wavemin = max(tmpl_wave[0], wave[0])
-    wavemax = min(tmpl_wave[-1], wave[-1])
+    # Decide wavelength sampling if not given.
+    if lwmin is None:
+      wavemin = max(tmpl_wave[0], wave[0])
+      lwmin = math.log(wavemin)
 
-    lwmin = math.log(wavemin)
-    lwmax = math.log(wavemax)
+    if lwmax is None:
+      wavemax = min(tmpl_wave[-1], wave[-1])
+      lwmax = math.log(wavemax)
 
     lwsamp = (lwmax-lwmin) / (self.nbin-1)
 
