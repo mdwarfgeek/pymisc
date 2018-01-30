@@ -152,6 +152,11 @@ def rotbroad(lw, lwsamp, hbin, nbin, pbin, zbroad, u1, u2):
     
     K = (a - c*y) * numpy.sqrt(y) + b*y
 
+    # Renormalize kernel so sampled numerical (discrete) integral
+    # comes out properly normalized.
+    sK = numpy.sum(K)
+    K /= sK
+
     # Format into full-size array with zero padding.
     kpad = numpy.zeros([pbin])
     kpad[0:imax+1] = K[ioff:ioff+imax+1]
