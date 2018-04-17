@@ -1,5 +1,6 @@
 import math
 import sys
+import warnings
 
 # Parameters for double-exponential model in Benedict et al. (2016).
 _x0 = 0.076
@@ -79,7 +80,7 @@ Benedict et al. (2016) AJ 152 141
     i += 1
   
   if i >= _maxiter:
-    print >>sys.stderr, "mk2mass_ben: iteration limit reached"
+    warnings.warn("mk2mass_ben: iteration limit reached")
 
   m = x + _x0
   # Catch "negative mass" and clip to zero.

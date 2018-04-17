@@ -1,6 +1,7 @@
 import math
 import numpy
 import sys
+import warnings
 
 from scipy.interpolate import InterpolatedUnivariateSpline
 
@@ -56,7 +57,7 @@ def fitpeak(x, y, pkfrac):
 
   if xbest is None:
     # Fall back to something simpler.
-    print >>sys.stderr, "fitpeak: failed to find maximum in range"
+    warnings.warn("fitpeak: failed to find maximum in range")
     xbest, ybest = parint(x, y, imax)
 
   return xbest, ybest
@@ -83,7 +84,7 @@ def parint(x, y, ipk):
     xbest = xpk - 0.5*b/c
     ybest = ypk - 0.25*b*b/c
   else:
-    print >>sys.stderr, "parint: failed"
+    warnings.warn("parint: failed")
     xbest = xpk
     ybest = ypk
 
