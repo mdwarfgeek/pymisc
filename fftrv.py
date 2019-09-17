@@ -321,18 +321,20 @@ Nidever et al. 2002 for a set of suitable M-dwarf velocity standards).
     # Wavelength array.
     lw = lwmin + lwsamp * numpy.arange(self.nbin)
 
+    # Chop NaNs.
+    tmpl_msk = numpy.isfinite(tmpl_flux)
+    msk = numpy.isfinite(flux)
+
     # Chop emission lines.
     if self.t_emchop:
-      medflux, sigflux = medsig(tmpl_flux)
-      tmpl_msk = tmpl_flux < medflux + self.t_em_reject*sigflux
-    else:
-      tmpl_msk = numpy.ones_like(tmpl_flux, dtype=numpy.bool)
+      medflux, sigflux = medsig(tmpl_flux[tmpl_msk])
+      tmpl_msk = numpy.logical_and(tmpl_msk,
+                                   tmpl_flux < medflux + self.t_em_reject*sigflux)
 
     if self.s_emchop:
-      medflux, sigflux = medsig(flux)
-      msk = flux < medflux + self.s_em_reject*sigflux
-    else:
-      msk = numpy.ones_like(flux, dtype=numpy.bool)
+      medflux, sigflux = medsig(flux[msk])
+      msk = numpy.logical_and(msk,
+                              flux < medflux + self.s_em_reject*sigflux)
 
     # Resample.
     tmpl_bin = resample(lw,
