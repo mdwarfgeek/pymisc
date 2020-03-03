@@ -66,25 +66,29 @@ def parint(x, y, ipk):
   xpk = x[ipk]
   ypk = y[ipk]
 
-  dxa = x[ipk-1] - xpk
-  dxb = x[ipk+1] - xpk
-  dya = y[ipk-1] - ypk
-  dyb = y[ipk+1] - ypk
+  if ipk > 0 and ipk < len(y)-1:
+    dxa = x[ipk-1] - xpk
+    dxb = x[ipk+1] - xpk
+    dya = y[ipk-1] - ypk
+    dyb = y[ipk+1] - ypk
 
-  # Check there's a maximum.
-  if dya < 0 and dyb < 0:
-    dxasq = dxa*dxa
-    dxbsq = dxb*dxb
+    # Check there's a maximum.
+    if dya < 0 and dyb < 0:
+      dxasq = dxa*dxa
+      dxbsq = dxb*dxb
 
-    denom = dxb * dxasq - dxa * dxbsq
+      denom = dxb * dxasq - dxa * dxbsq
 
-    b = (dyb * dxasq - dya * dxbsq) / denom
-    c = (dya * dxb - dyb * dxa) / denom
+      b = (dyb * dxasq - dya * dxbsq) / denom
+      c = (dya * dxb - dyb * dxa) / denom
 
-    xbest = xpk - 0.5*b/c
-    ybest = ypk - 0.25*b*b/c
+      xbest = xpk - 0.5*b/c
+      ybest = ypk - 0.25*b*b/c
+    else:
+      warnings.warn("parint: failed")
+      xbest = xpk
+      ybest = ypk
   else:
-    warnings.warn("parint: failed")
     xbest = xpk
     ybest = ypk
 
