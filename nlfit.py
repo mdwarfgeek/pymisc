@@ -1,7 +1,7 @@
 import numpy
 import scipy.optimize
 
-def nlfit(func, parminit, fixed, y, e_y, escale=True, flag=None):
+def nlfit(func, parminit, fixed, y, e_y, escale=True, flag=None, wantcov=False):
   """nlfit - non-linear least-squares with tied parameters.
 
 Basic usage:
@@ -85,11 +85,20 @@ arguments.
 
   # Repack into output vectors.
   parm = numpy.copy(parminit)
-  e_parm = numpy.zeros_like(parm)
-
   parm[pmap] = pfit
 
-  if cov_pfit is not None:
-    e_parm[pmap] = numpy.sqrt(numpy.diagonal(cov_pfit) * varscl)
+  if wantcov:
+    cov_ret = numpy.zeros([parminit.size, parminit.size])
 
-  return parm, e_parm, chisq, ndof
+    if cov_pfit is not None:
+      for i, p in enumerate(pmap):
+        cov_ret[p,pmap] = cov_pfit[i,:] * varscl
+    
+    return parm, cov_ret, chisq, ndof
+  else:
+    e_parm = numpy.zeros_like(parm)
+
+    if cov_pfit is not None:
+      e_parm[pmap] = numpy.sqrt(numpy.diagonal(cov_pfit) * varscl)
+
+    return parm, e_parm, chisq, ndof
