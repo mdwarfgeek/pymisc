@@ -385,7 +385,7 @@ Nidever et al. 2002 for a set of suitable M-dwarf velocity standards).
     if zbroadt > 0:
       broad = rotbroad(lw, lwsamp, self.hbin, self.nbin, pbin, zbroadt, u1, u2)
 
-      if broadt is not None:
+      if zbroadt is not None:
         broad_ft = numpy.fft.rfft(broad)
         targ_ft *= broad_ft
 
