@@ -281,7 +281,7 @@ Nidever et al. 2002 for a set of suitable M-dwarf velocity standards).
                t_em_reject=5.0,
                s_em_reject=5.0,
                pkfit=1,
-               pkfrac=0.5):
+               pkfrac=0.9):
 
     # Store parameters.
     self.apodize = apodize
