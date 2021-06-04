@@ -18,14 +18,12 @@ def clipdplate(comx, comy, refx, refy, w=None, niter=10, nsig=5):
     modx = coef[0]*comx + coef[1]*comy + coef[2]
     mody = coef[3]*comy + coef[4]*comx + coef[5]
 
-    resx = modx-refx
-    resy = mody-refy
+    resx = numpy.absolute(modx-refx)
+    resy = numpy.absolute(mody-refy)
 
-    resid = numpy.sqrt(resx*resx + resy*resy)
-
-    averr = 1.48 * numpy.median(resid)
-
-    flag = resid < nsig*averr
+    averr = 1.48 * numpy.median(numpy.concatenate((resx, resy)))
+    
+    flag = numpy.logical_and(resx < nsig*averr, resy < nsig*averr)
 
     # Did it change?  Stop if not.
     nptnew = numpy.sum(flag)
@@ -35,4 +33,4 @@ def clipdplate(comx, comy, refx, refy, w=None, niter=10, nsig=5):
     wtmp *= flag
     npt = nptnew
 
-  return coef, averr
+  return coef, averr, npt
