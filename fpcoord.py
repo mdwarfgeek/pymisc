@@ -20,16 +20,19 @@ def standc(a, d, tpa, tpd):
 
 # Standard coordinates to RA, Dec.
 
-def xixn(xi, xn, tpa, tpd):
+def xixn(xi, xn, tpa, tpd, wrap=True):
   stpd = numpy.sin(tpd)
   ctpd = numpy.cos(tpd)
 
   denom = ctpd - xn * stpd
 
   aa = numpy.arctan2(xi, denom)
-  a = numpy.fmod(aa + tpa, 2*math.pi)
-  a = numpy.where(a < 0, 2*math.pi+a, a)
-
+  if wrap:
+    a = numpy.fmod(aa + tpa, 2*math.pi)
+    a = numpy.where(a < 0, 2*math.pi+a, a)
+  else:
+    a = aa + tpa
+    
   d = numpy.arctan2(stpd + xn * ctpd, numpy.hypot(xi, denom))
 
   return a, d
