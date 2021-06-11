@@ -89,48 +89,16 @@ def lrmatch(comx, comy, commag, comerr,
 # Binary chop for array sorted on "a".
 
 def bserchmult(coma, comb, refa, refb, errlim):
-  m = len(refa)
+  isp, ifp = numpy.searchsorted(refa, [ coma - errlim, coma + errlim ])
 
-  isp = 1
-  ifp = m
-  errsq = errlim * errlim
-  index = int((isp + ifp) / 2)
+  errsq = numpy.square(errlim)
 
-  # Find lower limit index
-  while ifp-isp >= 2:
-    if refa[index-1] < coma - errlim:
-      isp = index
-      index = int((index+ifp)/2)
-    elif refa[index-1] > coma - errlim:
-      ifp = index
-      index = int((index+isp)/2)
-    else:
-      isp = index
-      break
+  poserrsq = numpy.square(coma - refa[isp:ifp]) + numpy.square(comb - refb[isp:ifp])
 
-  # This is the numpy way of doing it, but doesn't seem to be any faster?
-#  isp = numpy.searchsorted(refa, coma - errlim)
-
-  # Finish search on x
-  # Find all within limit
-  iref = []
-  sep = []
-
-  i = isp
-  while i <= m:
-    if refa[i-1] > coma + errlim:
-      break
-
-    poserrsq = (coma - refa[i-1])**2 + (comb - refb[i-1])**2
-    if poserrsq < errsq:
-      iref.append(i-1)
-      sep.append(math.sqrt(poserrsq))
-
-    i += 1
-
-  iref = numpy.array(iref, dtype=numpy.int)
-  sep = numpy.array(sep, dtype=numpy.double)
-
+  ww = poserrsq < errsq
+  iref = isp + numpy.nonzero(ww)[0]
+  sep = numpy.sqrt(poserrsq[ww])
+  
   return iref, sep
 
 def lrmatch1d(comx, commag, comerr,
@@ -173,9 +141,10 @@ def lrmatch1d(comx, commag, comerr,
   best_lr_for_ref = numpy.empty_like(refx, dtype=numpy.double)
 
   for comrow in range(ncom):
-    refrows, sep = bserchmult1d(comx[comrow],
-                                refx,
-                                searchrad)
+    isp, ifp = numpy.searchsorted(refx, [ comx[comrow] - searchrad, comx[comrow] + searchrad ])
+
+    refrows = numpy.arange(isp, ifp)
+    sep = numpy.absolute(refx[isp:ifp] - comx[comrow])
 
     if len(refrows) > 0:
       # Likelihood ratios.
@@ -203,48 +172,3 @@ def lrmatch1d(comx, commag, comerr,
 
   return best_ref_for_com, best_com_for_ref
 
-# Binary chop for array sorted on "a".
-
-def bserchmult1d(coma, refa, errlim):
-  m = len(refa)
-
-  isp = 1
-  ifp = m
-  index = int((isp + ifp) / 2)
-
-  # Find lower limit index
-  while ifp-isp >= 2:
-    if refa[index-1] < coma - errlim:
-      isp = index
-      index = int((index+ifp)/2)
-    elif refa[index-1] > coma - errlim:
-      ifp = index
-      index = int((index+isp)/2)
-    else:
-      isp = index
-      break
-
-  # This is the numpy way of doing it, but doesn't seem to be any faster?
-#  isp = numpy.searchsorted(refa, coma - errlim)
-
-  # Finish search on x
-  # Find all within limit
-  iref = []
-  sep = []
-
-  i = isp
-  while i <= m:
-    if refa[i-1] > coma + errlim:
-      break
-
-    poserr = numpy.absolute(coma - refa[i-1])
-    if poserr < errlim:
-      iref.append(i-1)
-      sep.append(poserr)
-
-    i += 1
-
-  iref = numpy.array(iref, dtype=numpy.int)
-  sep = numpy.array(sep, dtype=numpy.double)
-
-  return iref, sep
