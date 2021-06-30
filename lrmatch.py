@@ -21,12 +21,12 @@ def lrmatch(comx, comy, commag, comerr,
   if commag is None:
     commaglogrank = numpy.zeros_like(comx)
   else:
-    commaglogrank = scipy.stats.rankdata(commag)
+    commaglogrank = numpy.log(scipy.stats.rankdata(commag))
 
   if refmag is None:
     refmaglogrank = numpy.zeros_like(refx)
   else:
-    refmaglogrank = scipy.stats.rankdata(refmag)
+    refmaglogrank = numpy.log(scipy.stats.rankdata(refmag))
 
   # Substitute for errors if not given.
   if referr is None:
@@ -113,12 +113,12 @@ def lrmatch1d(comx, commag, comerr,
   if commag is None:
     commaglogrank = numpy.zeros_like(comx)
   else:
-    commaglogrank = scipy.stats.rankdata(commag)
+    commaglogrank = numpy.log(scipy.stats.rankdata(commag))
 
   if refmag is None:
     refmaglogrank = numpy.zeros_like(refx)
   else:
-    refmaglogrank = scipy.stats.rankdata(refmag)
+    refmaglogrank = numpy.log(scipy.stats.rankdata(refmag))
 
   # Substitute for errors if not given.
   if referr is None:
