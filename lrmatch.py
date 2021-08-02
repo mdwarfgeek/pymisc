@@ -9,6 +9,14 @@ import scipy.stats
 # to epoch of "com" if necessary).
 # Non-matches are indicated by -1 in the returned lists of indices.
 
+# NOTE: this routine is very slow.  For any use where performance is
+# important, use the C reimplementation lfa.lrmatch instead.  The
+# arguments are not quite the same, pass in log rank instead of mag
+# and order is a bool (x = False, y = True).  The C routine is about
+# 100x faster in my tests.  I'm not sure why the python version is so
+# slow, the time seems to all be taken in the numpy routines inside
+# bserchmult.
+
 def lrmatch(comx, comy, commag, comerr,
             refx, refy, refmag, referr,
             searchrad, order):
