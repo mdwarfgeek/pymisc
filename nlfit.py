@@ -84,7 +84,7 @@ arguments.
       raise RuntimeError("least_squares: " + result.message)
 
     pfit = result.x
-    cov_pfit = numpy.linalg.inv(numpy.dot(result.jac.T, result.jac))
+    cov_pfit = numpy.linalg.pinv(numpy.dot(result.jac.T, result.jac))
     fvec = wrap(pfit)
 
   else:
