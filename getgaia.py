@@ -30,7 +30,7 @@ dtype_subset = numpy.dtype({ "names": ["source_id",
                                        "ra", "dec",
                                        "parallax", "pmra", "pmdec",
                                        "ruwe", "G", "BP", "RP"],
-                             "formats": ["<u8",
+                             "formats": ["<i8",
                                          "<f8", "<f8",
                                          "<f8", "<f8", "<f8",
                                          "<f4", "<f4", "<f4", "<f4"] })
