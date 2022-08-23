@@ -4,6 +4,7 @@ import numpy
 
 from catsearch import *
 from fpcoord import *
+from healpix import *
 
 dtype_full = numpy.dtype({ "names": ["source_id",
                                      "ra", "ra_error",
@@ -40,6 +41,54 @@ zonesperdeg = 5
 basepath = "."
 
 dtor = numpy.radians(1.0)
+
+def getgaia(source_id, basepath=None, subset=False):
+  # Ensure flat numpy array of int64.
+  if isinstance(source_id, numpy.ndarray):
+    source_id = source_id.flatten()
+  else:
+    source_id = numpy.array(source_id, dtype=numpy.int64).flatten()
+
+  # Extract HEALPix number.
+  healid = source_id >> 35
+
+  # Unique HEALPix numbers we need to search.
+  tosearch = numpy.unique(healid)
+
+  # Initialize result.
+  if subset:
+    dtype = dtype_subset
+  else:
+    dtype = dtype_full
+
+  result = numpy.zeros_like(source_id, dtype=dtype)
+  result["source_id"] = -1
+
+  # Map of source_id to output element.
+  sourcemap = { v: i for i, v in enumerate(source_id) }
+
+  for this_healid in tosearch:
+    # Find centre of pixel.
+    cent_ra, cent_de = heal2sky(this_healid, 4096)
+
+    # Extract sources in pixel.  GAIA's nside=4096 corresponds to
+    # about a sq. arcmin so we should only need to search about 
+    # 2 arcmin box size (the pixels are oriented at 45 degrees)
+    # but the borders could get distorted by the difference in
+    # projection, so we allow a bit more here at the expense of
+    # some inefficiency.
+    cutout = boxgaia(cent_ra, cent_de, dtor * 5.0 / 60.0,
+                     basepath=basepath,
+                     subset=subset)
+
+    # Figure out which rows we need and put them into the result.
+    for row in cutout:
+      this_source_id = row["source_id"]
+
+      if this_source_id in sourcemap:
+        result[sourcemap[this_source_id]] = row
+
+  return result
 
 # Box cutout from GAIA catalogue.  Arguments in radians.
 def boxgaia(cent_ra, cent_dec, width,
