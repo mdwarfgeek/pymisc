@@ -48,10 +48,10 @@ def lrmatch(comx, comy, commag, comerr,
   # For each comparison object, search for ref objects.
   ncom = len(comx)
 
-  best_ref_for_com = numpy.empty_like(comx, dtype=numpy.int)
+  best_ref_for_com = numpy.empty_like(comx, dtype=int)
   best_ref_for_com.fill(-1)
 
-  best_com_for_ref = numpy.empty_like(refx, dtype=numpy.int)
+  best_com_for_ref = numpy.empty_like(refx, dtype=int)
   best_com_for_ref.fill(-1)
 
   best_lr_for_ref = numpy.empty_like(refx, dtype=numpy.double)
@@ -140,10 +140,10 @@ def lrmatch1d(comx, commag, comerr,
   # For each comparison object, search for ref objects.
   ncom = len(comx)
 
-  best_ref_for_com = numpy.empty_like(comx, dtype=numpy.int)
+  best_ref_for_com = numpy.empty_like(comx, dtype=int)
   best_ref_for_com.fill(-1)
 
-  best_com_for_ref = numpy.empty_like(refx, dtype=numpy.int)
+  best_com_for_ref = numpy.empty_like(refx, dtype=int)
   best_com_for_ref.fill(-1)
 
   best_lr_for_ref = numpy.empty_like(refx, dtype=numpy.double)

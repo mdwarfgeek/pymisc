@@ -39,7 +39,7 @@ arguments.
     if fixed is None or not fixed[iparm]:
       pmap.append(iparm)
 
-  pmap = numpy.array(pmap, dtype=numpy.int)
+  pmap = numpy.array(pmap, dtype=int)
 
   # How many parameters are being varied?
   nvary = len(pmap)

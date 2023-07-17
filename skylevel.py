@@ -16,7 +16,7 @@ def skylevel(a, mask=None, clip_low=None, clip_high=3.0):
   sky, noise = medsig(atmp)
 
   for i in range(5):
-    ww = numpy.ones_like(atmp, dtype=numpy.bool)
+    ww = numpy.ones_like(atmp, dtype=bool)
     if clip_low is not None:
       ww[(atmp-sky) < -clip_low*noise] = 0
     if clip_high is not None:
