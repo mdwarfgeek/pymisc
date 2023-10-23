@@ -39,6 +39,7 @@ dtype_subset = numpy.dtype({ "names": ["source_id",
 maxfile = 900
 zonesperdeg = 5
 basepath = "."
+gaia_epoch = 2016.0
 
 dtor = numpy.radians(1.0)
 
